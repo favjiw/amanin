@@ -28,11 +28,12 @@ class _BotnavbarState extends State<Botnavbar> {
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.red,
         shape: CircleBorder(),
-        child: Image.asset(
-          'assets/home-ic.png',
-          width: 40.w,
-          height: 40.h,
-        ),
+        child: Text('SOS'),
+        // child: Image.asset(
+        //   'assets/home-ic.png',
+        //   width: 40.w,
+        //   height: 40.h,
+        // ),
         onPressed: () {
           // Navigator.pushNamed(context, '/complaint');
         },
