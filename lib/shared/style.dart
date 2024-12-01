@@ -34,3 +34,27 @@ TextStyle seeAll = GoogleFonts.poppins(
   fontWeight: FontWeight.w400,
   color: mainColor,
 );
+
+TextStyle appBar = GoogleFonts.poppins(
+  fontSize: 20.sp,
+  fontWeight: FontWeight.w600,
+  color: HexColor('#1B1E28'),
+);
+
+TextStyle profileName = GoogleFonts.poppins(
+  fontSize: 24.sp,
+  fontWeight: FontWeight.w500,
+  color: HexColor('#1B1E28'),
+);
+
+TextStyle profileEmail = GoogleFonts.poppins(
+  fontSize: 13.sp,
+  fontWeight: FontWeight.w400,
+  color: HexColor('#7D848D'),
+);
+
+TextStyle logoutBtn = GoogleFonts.poppins(
+  fontSize: 16.sp,
+  fontWeight: FontWeight.w400,
+  color: Colors.white,
+);
