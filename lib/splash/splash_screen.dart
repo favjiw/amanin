@@ -13,7 +13,14 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
   late Timer _timer;
-
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    Timer(Duration(seconds: 3), () {
+      Navigator.pushReplacementNamed(context, '/botnavbar');
+    });
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(

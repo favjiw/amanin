@@ -16,7 +16,7 @@ class Botnavbar extends StatefulWidget {
 class _BotnavbarState extends State<Botnavbar> {
   int currentIndex = 0;
   final PageStorageBucket bucket = PageStorageBucket();
-  Widget currentScreen = SplashScreen();
+  Widget currentScreen = Homescreen();
 
   @override
   Widget build(BuildContext context) {
@@ -49,58 +49,68 @@ class _BotnavbarState extends State<Botnavbar> {
             children: [
               Row(
                 children: [
+                  SizedBox(width: 5.w,),
+                  IconButton(
+                    onPressed: () {
+                      setState(() {
+                        currentScreen = Homescreen();
+                        currentIndex = 0;
+                      });
+                    },
+                    icon: Image.asset(
+                      currentIndex == 0
+                          ? 'assets/home-ic.png'
+                          : 'assets/home-inactive-ic.png',
+                      width: 25.52.w,
+                      height: 26.06.h,
+                    ),
+                  ),
                   SizedBox(width: 20.w,),
-                  InkWell(
-                      onTap: (){
-                        setState(() {
-                          currentScreen = Homescreen();
-                          currentIndex = 0;
-                        });
-                      },
-                      child: Image.asset(
-                        currentIndex == 0
-                            ? 'assets/home-ic.png'
-                            : 'assets/home-inactive-ic.png', width: 25.52.w, height: 26.06.h,)),
-                  SizedBox(width: 53.w,),
-                  InkWell(
-                      onTap: (){
-                        setState(() {
-                          currentScreen = StatScreen();
-                          currentIndex = 1;
-                        });
-                      },
-                      child: Image.asset(
-                        currentIndex == 1
+                  IconButton(
+                    onPressed: () {
+                      setState(() {
+                        currentScreen = StatScreen();
+                        currentIndex = 1;
+                      });
+                    },
+                    icon: Image.asset(
+                      currentIndex == 1
                           ? 'assets/stats-ic.png'
-                          : 'assets/stats-inactive-ic.png', width: 25.52.w, height: 26.06.h,)),
+                          : 'assets/stats-inactive-ic.png', width: 25.52.w, height: 26.06.h,
+                    ),
+                  )
                 ],
               ),
               Row(
                 children: [
-                  InkWell(
-                      onTap: (){
-                        setState(() {
-                          currentScreen = HistoryScreen();
-                          currentIndex = 2;
-                        });
-                      },
-                      child: Image.asset(
-                        currentIndex == 2
-                            ? 'assets/history-ic.png'
-                            : 'assets/history-inactive-ic.png', width: 25.52.w, height: 26.06.h,)),
-                  SizedBox(width: 53.w,),
-                  InkWell(
-                      onTap: (){
-                        setState(() {
-                          currentScreen = ProfileScreen();
-                          currentIndex = 3;
-                        });
-                      },
-                      child: Image.asset(
-                        currentIndex == 3
-                            ? 'assets/profile-ic.png'
-                            : 'assets/profile-inactive-ic.png', width: 25.52.w, height: 26.06.h,)),
+                  IconButton(
+                    onPressed: () {
+                      setState(() {
+                        currentScreen = HistoryScreen();
+                        currentIndex = 2;
+                      });
+                    },
+                    icon: Image.asset(
+                      currentIndex == 2
+                          ? 'assets/history-ic.png'
+                          : 'assets/history-inactive-ic.png', width: 25.52.w, height: 26.06.h,
+                    ),
+                  ),
                   SizedBox(width: 20.w,),
+                  IconButton(
+                    onPressed: () {
+                      setState(() {
+                        currentScreen = ProfileScreen();
+                        currentIndex = 3;
+                      });
+                    },
+                    icon: Image.asset(
+                      currentIndex == 3
+                          ? 'assets/profile-ic.png'
+                          : 'assets/profile-inactive-ic.png', width: 25.52.w, height: 26.06.h,
+                    ),
+                  ),
+                  SizedBox(width: 5.w,),
                 ],
               ),
             ],
