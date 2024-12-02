@@ -27,7 +27,7 @@ class _BotnavbarState extends State<Botnavbar> {
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.red,
-        shape: CircleBorder(),
+        shape: const CircleBorder(),
         child: Text('SOS'),
         // child: Image.asset(
         //   'assets/home-ic.png',
