@@ -8,7 +8,9 @@ class Assets {
   static const String assetsHomeInactiveIc = 'assets/home-inactive-ic.png';
   static const String assetsLocationIc = 'assets/location-ic.png';
   static const String assetsLogoImg = 'assets/logo-img.png';
+  static const String assetsMailIc = 'assets/mail-ic.png';
   static const String assetsNotifNoneIc = 'assets/notif-none-ic.png';
+  static const String assetsPasswIc = 'assets/passw-ic.png';
   static const String assetsProfileIc = 'assets/profile-ic.png';
   static const String assetsProfileImg = 'assets/profile-img.png';
   static const String assetsProfileInactiveIc = 'assets/profile-inactive-ic.png';

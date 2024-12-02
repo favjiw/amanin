@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:mobile_flutter3/auth/login_screen.dart';
+import 'package:mobile_flutter3/auth/signup_screen.dart';
 import 'package:mobile_flutter3/history/HistoryScreen.dart';
 import 'package:mobile_flutter3/home/HomeScreen.dart';
 import 'package:mobile_flutter3/profile/ProfileScreen.dart';
@@ -34,6 +36,8 @@ class _MainAppState extends State<MainApp> {
           routes: <String, WidgetBuilder>{
             '/splash': (context) => SplashScreen(),
             '/botnavbar': (context) => Botnavbar(),
+            '/login': (context) => LoginScreen(),
+            '/signup': (context) => SignupScreen(),
             '/home': (context) => Homescreen(),
             '/stats': (context) => StatScreen(),
             '/history': (context) => HistoryScreen(),

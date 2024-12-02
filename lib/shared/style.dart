@@ -58,3 +58,33 @@ TextStyle logoutBtn = GoogleFonts.poppins(
   fontWeight: FontWeight.w400,
   color: Colors.white,
 );
+
+TextStyle signTitle = GoogleFonts.poppins(
+  fontSize: 24.sp,
+  fontWeight: FontWeight.w500,
+  color: HexColor('#120D26'),
+);
+
+TextStyle loginOffInput = GoogleFonts.poppins(
+  color: HexColor('#9D9D9D'),
+  fontWeight: FontWeight.w500,
+  fontSize: 14.sp,
+);
+
+TextStyle loginOnInput = GoogleFonts.poppins(
+  color: Colors.black,
+  fontWeight: FontWeight.w500,
+  fontSize: 14.sp,
+);
+
+TextStyle forgotPassword = GoogleFonts.poppins(
+  color: Colors.black,
+  fontWeight: FontWeight.w500,
+  fontSize: 14.sp,
+);
+
+TextStyle noAcc = GoogleFonts.poppins(
+  color: Colors.black,
+  fontWeight: FontWeight.w500,
+  fontSize: 15.sp,
+);
