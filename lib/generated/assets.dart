@@ -16,5 +16,6 @@ class Assets {
   static const String assetsProfileInactiveIc = 'assets/profile-inactive-ic.png';
   static const String assetsStatsIc = 'assets/stats-ic.png';
   static const String assetsStatsInactiveIc = 'assets/stats-inactive-ic.png';
+  static const String assetsUsernameIc = 'assets/username-ic.png';
 
 }
