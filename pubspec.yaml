@@ -38,6 +38,9 @@ dependencies:
   flutter_screenutil: ^5.9.3
   hexcolor: ^3.0.1
   google_fonts: ^6.2.1
+  flutter_map: ^7.0.2
+  location: ^7.0.1
+  latlong2: ^0.9.1
 
 dev_dependencies:
   flutter_test:
