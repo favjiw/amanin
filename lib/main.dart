@@ -4,6 +4,7 @@ import 'package:mobile_flutter3/auth/login_screen.dart';
 import 'package:mobile_flutter3/auth/signup_screen.dart';
 import 'package:mobile_flutter3/history/HistoryScreen.dart';
 import 'package:mobile_flutter3/home/HomeScreen.dart';
+import 'package:mobile_flutter3/laporan/create_laporan_screen.dart';
 import 'package:mobile_flutter3/maps/maps_screen.dart';
 import 'package:mobile_flutter3/profile/ProfileScreen.dart';
 import 'package:mobile_flutter3/shared/Botnavbar.dart';
@@ -44,6 +45,7 @@ class _MainAppState extends State<MainApp> {
             '/history': (context) => HistoryScreen(),
             '/maps': (context) => MapScreen(),
             '/profile': (context) => ProfileScreen(),
+            '/createLaporan': (context) => CreateLaporanScreen(),
           },
         );
       },

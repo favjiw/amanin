@@ -53,7 +53,9 @@ class _HomescreenState extends State<Homescreen> {
                               borderRadius: BorderRadius.circular(15.r)
                           )
                       ),
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.pushNamed(context, "/createLaporan");
+                      },
                       child: Text(
                         "Buat Laporan",
                         style: whiteOnBtn,
