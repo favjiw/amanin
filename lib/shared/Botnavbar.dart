@@ -3,8 +3,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:mobile_flutter3/history/HistoryScreen.dart';
 import 'package:mobile_flutter3/home/HomeScreen.dart';
 import 'package:mobile_flutter3/profile/ProfileScreen.dart';
-import 'package:mobile_flutter3/splash/splash_screen.dart';
+import 'package:mobile_flutter3/shared/style.dart';
 import 'package:mobile_flutter3/stats/StatScreen.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 class Botnavbar extends StatefulWidget {
   const Botnavbar({super.key});
@@ -14,6 +16,7 @@ class Botnavbar extends StatefulWidget {
 }
 
 class _BotnavbarState extends State<Botnavbar> {
+  final String _number = "082117778131";
   int currentIndex = 0;
   final PageStorageBucket bucket = PageStorageBucket();
   Widget currentScreen = Homescreen();
@@ -28,14 +31,9 @@ class _BotnavbarState extends State<Botnavbar> {
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.red,
         shape: const CircleBorder(),
-        child: Text('SOS'),
-        // child: Image.asset(
-        //   'assets/home-ic.png',
-        //   width: 40.w,
-        //   height: 40.h,
-        // ),
+        child: Text('SOS', style: sos,),
         onPressed: () {
-          // Navigator.pushNamed(context, '/complaint');
+          launchUrlString("tel://911");
         },
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,

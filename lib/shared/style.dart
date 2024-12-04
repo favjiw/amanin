@@ -113,3 +113,9 @@ TextStyle detailStatus = GoogleFonts.poppins(
   fontSize: 14.sp,
 );
 
+TextStyle sos = GoogleFonts.poppins(
+  color: HexColor('#FFFFFF'),
+  fontWeight: FontWeight.w500,
+  fontSize: 20.sp,
+);
+
