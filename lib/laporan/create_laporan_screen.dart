@@ -187,8 +187,7 @@ class _CreateLaporanScreenState extends State<CreateLaporanScreen> {
                             )
                         ),
                         onPressed: () {
-                          // login(_emailController.text,
-                          //     _passwordController.text);
+                          Navigator.pushReplacementNamed(context, '/detailLaporan');
                         },
                         child: Text(
                           "KIRIM LAPORAN",

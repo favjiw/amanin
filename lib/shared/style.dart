@@ -89,3 +89,27 @@ TextStyle noAcc = GoogleFonts.poppins(
   fontSize: 15.sp,
 );
 
+TextStyle detailTitle = GoogleFonts.poppins(
+  color: HexColor('#D74A49'),
+  fontWeight: FontWeight.w600,
+  fontSize: 15.sp,
+);
+
+TextStyle detailLabel = GoogleFonts.poppins(
+  color: HexColor('#000000'),
+  fontWeight: FontWeight.w600,
+  fontSize: 14.sp,
+);
+
+TextStyle detailValue = GoogleFonts.poppins(
+  color: HexColor('#000000'),
+  fontWeight: FontWeight.w500,
+  fontSize: 14.sp,
+);
+
+TextStyle detailStatus = GoogleFonts.poppins(
+  color: HexColor('#FE6136'),
+  fontWeight: FontWeight.w500,
+  fontSize: 14.sp,
+);
+
