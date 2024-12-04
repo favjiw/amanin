@@ -7,6 +7,7 @@ import 'package:mobile_flutter3/home/HomeScreen.dart';
 import 'package:mobile_flutter3/laporan/create_laporan_screen.dart';
 import 'package:mobile_flutter3/laporan/detail_laporan_screen.dart';
 import 'package:mobile_flutter3/maps/maps_screen.dart';
+import 'package:mobile_flutter3/notification/notification_screen.dart';
 import 'package:mobile_flutter3/profile/ProfileScreen.dart';
 import 'package:mobile_flutter3/shared/Botnavbar.dart';
 import 'package:mobile_flutter3/splash/splash_screen.dart';
@@ -48,6 +49,7 @@ class _MainAppState extends State<MainApp> {
             '/profile': (context) => ProfileScreen(),
             '/createLaporan': (context) => CreateLaporanScreen(),
             '/detailLaporan': (context) => DetailLaporanScreen(),
+            '/notification': (context) => NotificationScreen(),
           },
         );
       },

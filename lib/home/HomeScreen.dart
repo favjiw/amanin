@@ -33,7 +33,9 @@ class _HomescreenState extends State<Homescreen> {
                     style: homeWelcome,
                   ),
                   InkWell(
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.pushNamed(context, '/notification');
+                      },
                       child: Image.asset(
                         Assets.assetsNotifNoneIc,
                         width: 31.34.w,
