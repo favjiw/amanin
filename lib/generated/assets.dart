@@ -3,6 +3,7 @@ class Assets {
   Assets._();
 
   static const String assetsAlertIc = 'assets/alert-ic.png';
+  static const String assetsCalendarIc = 'assets/calendar-ic.png';
   static const String assetsCameraImg = 'assets/camera-img.png';
   static const String assetsHistoryIc = 'assets/history-ic.png';
   static const String assetsHistoryInactiveIc = 'assets/history-inactive-ic.png';

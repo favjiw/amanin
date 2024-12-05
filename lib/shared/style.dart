@@ -119,3 +119,33 @@ TextStyle sos = GoogleFonts.poppins(
   fontSize: 20.sp,
 );
 
+TextStyle appBarHistory = GoogleFonts.poppins(
+  fontSize: 20.sp,
+  fontWeight: FontWeight.w600,
+  color: Colors.white,
+);
+
+TextStyle tabTitle = GoogleFonts.poppins(
+  fontSize: 14.sp,
+  fontWeight: FontWeight.w500,
+  color: Colors.white,
+);
+
+TextStyle unSelectedTabTitle = GoogleFonts.poppins(
+  fontSize: 14.sp,
+  fontWeight: FontWeight.w500,
+  color: HexColor('#717171'),
+);
+
+TextStyle historyDate = GoogleFonts.poppins(
+  color: HexColor('#000000'),
+  fontWeight: FontWeight.w500,
+  fontSize: 14.sp,
+);
+
+TextStyle historyOnBtn = GoogleFonts.poppins(
+  color: HexColor('#FFFFFF'),
+  fontWeight: FontWeight.w400,
+  fontSize: 12.sp,
+);
+
