@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:hexcolor/hexcolor.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:mobile_flutter3/Model/Laporan.dart';
+import 'package:mobile_flutter3/Model/User.dart';
 import 'package:mobile_flutter3/generated/assets.dart';
+import 'package:mobile_flutter3/home/UserListPage.dart';
 import 'package:mobile_flutter3/services/laporan_services.dart';
+import 'package:mobile_flutter3/services/user_services.dart';
 import 'package:mobile_flutter3/shared/style.dart';
-import 'package:http/http.dart';
+import 'package:http/http.dart' as http;
 
 class Homescreen extends StatefulWidget {
   const Homescreen({super.key});
@@ -18,12 +21,31 @@ class Homescreen extends StatefulWidget {
 class _HomescreenState extends State<Homescreen> {
   late Future<List<Laporan>> _futureLaporan;
   final LaporanService _laporanService = LaporanService();
+  User? _user;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     _futureLaporan = _laporanService.fetchLaporan();
+    _fetchUserData();
+  }
+
+  Future<void> _fetchUserData() async {
+    final user = await UserServices().fetchUserData();
+    setState(() {
+      _user = user;
+    });
+  }
+
+  Future<void> fetchData() async {
+    final response = await http.get(Uri.parse('https://amanin.my.id/api/user'));
+
+    if (response.statusCode == 200) {
+      print(response.body);
+    } else {
+      print('Request failed with status: ${response.statusCode}.');
+    }
   }
 
   @override
@@ -41,8 +63,11 @@ class _HomescreenState extends State<Homescreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
+                  _user == null
+                  ? const CircularProgressIndicator()
+                      :
                   Text(
-                    'Welcome, Karina',
+                    'Welcome, ${_user!.username}',
                     style: homeWelcome,
                   ),
                   InkWell(
@@ -126,6 +151,10 @@ class _HomescreenState extends State<Homescreen> {
                     children: [
                       InkWell(
                         onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => Userlistpage()),
+                          );
                           // Navigator.pushNamed(context, "/complaint");
                           // print(currentId);
                         },

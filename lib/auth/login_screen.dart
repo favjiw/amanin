@@ -41,16 +41,11 @@ class _LoginScreenState extends State<LoginScreen> {
     });
 
     if (response['success']) {
-      // Login berhasil
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Login berhasil!')),
       );
-
-      // Lakukan navigasi atau penyimpanan token
-      // Contoh: Navigator.pushReplacementNamed(context, '/home');
       Navigator.pushReplacementNamed(context, '/botnavbar');
     } else {
-      // Login gagal
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(response['message'])),
       );

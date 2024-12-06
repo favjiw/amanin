@@ -1,14 +1,19 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:mobile_flutter3/Model/User.dart';
 
 class AuthService {
   final String _baseUrl = "https://amanin.my.id/api";
-  // late String token;
 
   Future<void> storeToken(String token) async {
     final storage = FlutterSecureStorage();
     await storage.write(key: 'auth_token', value: token);
+  }
+
+  Future<void> storeUserId(String userId) async {
+    final storage = FlutterSecureStorage();
+    await storage.write(key: 'user_id', value: userId);
   }
 
   Future<Map<String, dynamic>> register({
@@ -70,27 +75,41 @@ class AuthService {
         }),
       );
 
-      print(response.body);
+      print('Raw API response: ${response.body}');
 
       if (response.statusCode == 200) {
-        // Check for successful login and extract token
         final body = response.body;
+
         if (body.startsWith('{')) {
-          // JSON response, potentially containing error message
+          // Jika respons berupa JSON
           final data = jsonDecode(body);
+          print('Decoded API response: $data');
+
           if (data['success'] ?? false) {
-            // Successful login, extract token from data (assuming 'token' key)
             final token = data['token'];
-            await storeToken(token); // Store the retrieved token securely
-            return {'success': true};
+            await storeToken(token);
+
+            // Parsing data user jika tersedia
+            if (data.containsKey('data')) {
+              try {
+                final user = User.fromJson(data);
+                print('User logged in: ${user.name}');
+                return {'success': true, 'user': user};
+              } catch (e) {
+                print('Error parsing user: $e');
+                return {'success': false, 'message': 'Failed to parse user data'};
+              }
+            }
+
+            return {'success': true, 'message': 'Login successful, token saved'};
           } else {
-            // Login failed due to error message in JSON
             return {'success': false, 'message': data['message']};
           }
         } else {
-          // Assuming string response containing token
-          await storeToken(body); // Store the retrieved token securely
-          return {'success': true};
+          // Jika respons hanya berupa token string
+          await storeToken(body); // Simpan token langsung
+          print('Token stored: $body');
+          return {'success': true, 'message': 'Token saved'};
         }
       } else {
         return {
@@ -131,7 +150,4 @@ class AuthService {
       print("Terjadi kesalahan saat logout: $e");
     }
   }
-
 }
-
-
