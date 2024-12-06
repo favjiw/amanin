@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:mobile_flutter3/generated/assets.dart';
+import 'package:mobile_flutter3/services/auth_services.dart';
 import 'package:mobile_flutter3/shared/style.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -14,6 +15,7 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   late bool _isPasswordVisible;
+  bool _isLoading = false;
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
@@ -22,6 +24,38 @@ class _LoginScreenState extends State<LoginScreen> {
     // TODO: implement initState
     super.initState();
     _isPasswordVisible = false;
+  }
+
+  void _login() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    final response = await AuthService().login(
+      email: _emailController.text.trim(),
+      password: _passwordController.text.trim(),
+    );
+
+    setState(() {
+      _isLoading = false;
+    });
+
+    if (response['success']) {
+      // Login berhasil
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Login berhasil!')),
+      );
+
+      // Lakukan navigasi atau penyimpanan token
+      // Contoh: Navigator.pushReplacementNamed(context, '/home');
+      Navigator.pushReplacementNamed(context, '/botnavbar');
+    } else {
+      // Login gagal
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(response['message'])),
+      );
+      print(response['message']);
+    }
   }
 
   @override
@@ -130,7 +164,10 @@ class _LoginScreenState extends State<LoginScreen> {
                       child: SizedBox(
                         width: 271.w,
                         height: 60.h,
-                        child: ElevatedButton(
+                        child:
+                        _isLoading
+                          ? const Center(child: CircularProgressIndicator())
+                          : ElevatedButton(
                           style: ElevatedButton.styleFrom(
                               backgroundColor: mainColor,
                               shape: RoundedRectangleBorder(
@@ -138,8 +175,8 @@ class _LoginScreenState extends State<LoginScreen> {
                               )
                           ),
                           onPressed: () {
-                            // login(_emailController.text,
-                            //     _passwordController.text);
+                            _login();
+                            print('Login Button clicked');
                           },
                           child: Text(
                             "SIGN IN",

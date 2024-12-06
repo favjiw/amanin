@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:mobile_flutter3/generated/assets.dart';
+import 'package:mobile_flutter3/services/auth_services.dart';
 import 'package:mobile_flutter3/shared/style.dart';
 
 class SignupScreen extends StatefulWidget {
@@ -199,9 +200,37 @@ class _SignupScreenState extends State<SignupScreen> {
                                 borderRadius: BorderRadius.circular(15.r)
                             )
                         ),
-                        onPressed: () {
-                          // login(_emailController.text,
-                          //     _passwordController.text);
+                        onPressed: () async {
+                          final authService = AuthService();
+
+                          // Validasi input
+                          if (_passwordController.text != _confirmPasswordController.text) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text("Passwords do not match")),
+                            );
+                            return;
+                          }
+
+                          // Panggil service register
+                          final result = await authService.register(
+                            username: _usernameController.text,
+                            email: _emailController.text,
+                            password: _passwordController.text,
+                            confirmPassword: _confirmPasswordController.text,
+                          );
+
+                          if (result['success']) {
+                            // Registrasi berhasil, arahkan ke halaman lain atau tampilkan pesan sukses
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text("Registration successful")),
+                            );
+                            Navigator.pop(context);
+                          } else {
+                            // Tampilkan pesan error
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text(result['message'])),
+                            );
+                          }
                         },
                         child: Text(
                           "SIGN UP",

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:mobile_flutter3/generated/assets.dart';
+import 'package:mobile_flutter3/services/auth_services.dart';
 import 'package:mobile_flutter3/shared/style.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -12,6 +14,26 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
+  String? _token;
+
+
+  Future<void> _fetchToken() async {
+    final storage = FlutterSecureStorage();
+    _token = await storage.read(key: 'auth_token');
+  }
+
+  void _logout(BuildContext context) async {
+    await AuthService().logout(_token!);
+    Navigator.pushReplacementNamed(context, '/login');
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _fetchToken();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,7 +53,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               color: HexColor('#D74A49'),
             ),
             onPressed: () {
-              // Handle button press
+
             },
           ),
         ],
@@ -46,7 +68,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 Container(
                   width: 130.w, // Set the desired width
                   height: 130.h, // Set the desired height
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
                     shape: BoxShape.circle, // Make the container circular
                     image: DecorationImage(
                       image: AssetImage(Assets
@@ -71,7 +93,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
                 ElevatedButton(
                   onPressed: () {
-                    // Handle sign out logic here
+                    _logout(context);
+                    print('Token: $_token');
+                    print('Cliced');
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.red,
