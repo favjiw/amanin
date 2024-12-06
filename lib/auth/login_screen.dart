@@ -45,7 +45,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   children: [
                     SizedBox(height: 100.h,),
                     Center(
-                      child: Image.asset(Assets.assetsLogoImg, width: 153.w, height: 153.h,),
+                      child: Image.asset(Assets.assetsAmaninLogoImg, width: 153.w, height: 153.h,),
                     ),
                     SizedBox(height: 60.h,),
                     Padding(padding: EdgeInsets.symmetric(horizontal: 9.w),

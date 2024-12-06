@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:mobile_flutter3/generated/assets.dart';
 import 'package:mobile_flutter3/shared/style.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -17,7 +18,7 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    Timer(Duration(seconds: 3), () {
+    Timer(const Duration(seconds: 3), () {
       Navigator.pushReplacementNamed(context, '/botnavbar');
     });
   }
@@ -29,7 +30,7 @@ class _SplashScreenState extends State<SplashScreen> {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Center(child: Image.asset('assets/logo-img.png', width: 153.w, height: 153.h,)),
+          Center(child: Image.asset(Assets.assetsAmaninLogoImg, width: 153.w, height: 153.h,)),
           Text("Amanin", style: splashTitle,),
         ],
       ),

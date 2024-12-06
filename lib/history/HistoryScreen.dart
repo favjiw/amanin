@@ -114,7 +114,7 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
                                       height: 40.h,
                                       child: ElevatedButton(
                                         onPressed: () {
-                                          // Handle button press
+                                          Navigator.pushNamed(context, '/detailLaporan');
                                         },
                                         style: ElevatedButton.styleFrom(
                                           backgroundColor: mainColor, // Set background color to mainColor
