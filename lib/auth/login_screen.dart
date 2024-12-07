@@ -41,9 +41,9 @@ class _LoginScreenState extends State<LoginScreen> {
     });
 
     if (response['success']) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Login berhasil!')),
-      );
+      // ScaffoldMessenger.of(context).showSnackBar(
+      //   SnackBar(content: Text('Login berhasil!')),
+      // );
       Navigator.pushReplacementNamed(context, '/botnavbar');
     } else {
       ScaffoldMessenger.of(context).showSnackBar(

@@ -1,9 +1,13 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hexcolor/hexcolor.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:mobile_flutter3/generated/assets.dart';
+import 'package:mobile_flutter3/services/laporan_services.dart';
 import 'package:mobile_flutter3/shared/style.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:image/image.dart' as img;
 
 class CreateLaporanScreen extends StatefulWidget {
   const CreateLaporanScreen({super.key});
@@ -16,12 +20,47 @@ class _CreateLaporanScreenState extends State<CreateLaporanScreen> {
   final TextEditingController _locationController = TextEditingController();
   final TextEditingController _descController = TextEditingController();
   String? _selectedValue;
+  File? _selectedImage;
+
   final List<String> _dropdownValues = [
-    'Option 1',
-    'Option 2',
-    'Option 3',
-    'Option 4',
+    'Konvoi Berbahaya',
+    'Pembegalan',
+    'Pencurian',
+    'Penganiayaan',
   ];
+
+  Future<File> resizeImage(File imageFile) async {
+    img.Image? image = img.decodeImage(imageFile.readAsBytesSync());
+
+    if (image == null) {
+      throw Exception("Gagal mendekode gambar");
+    }
+
+    img.Image resizedImage = img.copyResize(image, width: 800);
+
+    return File(imageFile.path)..writeAsBytesSync(img.encodeJpg(resizedImage));
+  }
+
+  Future<void> _pickImage() async {
+    PermissionStatus cameraStatus = await Permission.camera.request();
+
+    if (cameraStatus.isGranted) {
+      final picker = ImagePicker();
+      final pickedFile = await picker.pickImage(source: ImageSource.camera);
+      if (pickedFile != null) {
+        File imageFile = File(pickedFile.path);
+
+        // Resize gambar jika ukurannya terlalu besar
+        File resizedImage = await resizeImage(imageFile);
+
+        setState(() {
+          _selectedImage = resizedImage;
+        });
+      }
+    } else {
+      print('Camera permission denied');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +72,7 @@ class _CreateLaporanScreenState extends State<CreateLaporanScreen> {
         backgroundColor: Colors.white,
         appBar: AppBar(
           backgroundColor: Colors.white,
-          title: Text('Tambah Laporan'),
+          title: const Text('Tambah Laporan'),
           titleTextStyle: appBar,
           centerTitle: true,
           leading: IconButton(
@@ -58,27 +97,32 @@ class _CreateLaporanScreenState extends State<CreateLaporanScreen> {
                     height: 10.h,
                   ),
                   Center(
-                    child: Container(
-                      height: 174.h,
-                      width: 174.w,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(10.r),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.withOpacity(0.5),
-                            spreadRadius: 2,
-                            blurRadius: 5,
-                            offset: Offset(0, 3),
-                          ),
-                        ],
+                    child: InkWell(
+                      onTap: (){
+                        _pickImage();
+                      },
+                      child: Container(
+                        height: 174.h,
+                        width: 174.w,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(10.r),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.5),
+                              spreadRadius: 2,
+                              blurRadius: 5,
+                              offset: const Offset(0, 3),
+                            ),
+                          ],
+                        ),
+                        child: Center(
+                            child: Image.asset(
+                          Assets.assetsCameraImg,
+                          width: 100.w,
+                          height: 87.h,
+                        )),
                       ),
-                      child: Center(
-                          child: Image.asset(
-                        Assets.assetsCameraImg,
-                        width: 100.w,
-                        height: 87.h,
-                      )),
                     ),
                   ),
                   SizedBox(
@@ -186,8 +230,25 @@ class _CreateLaporanScreenState extends State<CreateLaporanScreen> {
                                 borderRadius: BorderRadius.circular(15.r)
                             )
                         ),
-                        onPressed: () {
-                          Navigator.pushReplacementNamed(context, '/detailLaporan');
+                        onPressed: () async {
+                          if (_locationController.text.isEmpty || _descController.text.isEmpty || _selectedValue == null || _selectedImage == null) {
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Semua kolom harus diisi dan gambar dipilih!')));
+                            return;
+                          }
+                          try {
+                            await LaporanService().createLaporanWithLocation(
+                              location: _locationController.text,
+                              desc: _descController.text,
+                              jenisKriminalitas: _selectedValue ?? 'Lainnya',
+                              imageFile: _selectedImage!, // Mengirimkan file gambar
+                            );
+                            Navigator.pushReplacementNamed(context, '/detailLaporan');
+                          } catch (e) {
+                            print('Gagal membuat laporan: $e');
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text('Gagal membuat laporan. Silakan coba lagi.')),
+                            );
+                          }
                         },
                         child: Text(
                           "KIRIM LAPORAN",

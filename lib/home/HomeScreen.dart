@@ -241,14 +241,14 @@ class _HomescreenState extends State<Homescreen> {
                                     Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-                                        Text(laporan.desc),
+                                        Text(laporan.title),
                                         SizedBox(height: 2.h,),
                                         Row(
                                           crossAxisAlignment: CrossAxisAlignment.center,
                                           children: [
                                             Image.asset('assets/location-ic.png', width: 15.w, height: 17.h,),
                                             SizedBox(width: 3.w,),
-                                            Text('${laporan.latitude}, ${laporan.longitude}'),
+                                            Text('${laporan.location}'),
                                           ],
                                         ),
                                       ],
