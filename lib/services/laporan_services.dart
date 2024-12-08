@@ -215,4 +215,46 @@ Future<String> fetchImage(String laporanId) async {
       throw Exception('Error fetching image: $e');
     }
   }
+
+  Future<List<Laporan>> fetchLaporan2024() async {
+    final token = await storage.read(key: 'auth_token');
+
+    try {
+      final response = await http.get(
+        Uri.parse('https://amanin.my.id/api/laporan'),
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+        },
+      );
+
+      print("Full response body: ${response.body}");
+
+      if (response.statusCode == 200) {
+        // Parse respons JSON
+        final Map<String, dynamic> jsonResponse = jsonDecode(response.body);
+
+        // Ambil daftar laporan dari properti "data"
+        final List<dynamic> laporanData = jsonResponse['data'];
+
+        // Ubah ke dalam daftar model Laporan
+        final laporanList = laporanData
+            .map((item) => Laporan.fromJson(item))
+            .where((laporan) {
+          final year = DateTime.parse(laporan.datetime.trim()).year;
+          return year == 2024;
+        })
+            .toList();
+
+        print("Filtered laporan: $laporanList"); // Debug laporan
+        return laporanList;
+      } else {
+        print('Error fetching laporan: ${response.body}');
+        throw Exception('Error fetching laporan: ${response.statusCode}');
+      }
+    } catch (e) {
+      print("Error fetching laporan: $e");
+      throw Exception("Error fetching laporan: $e");
+    }
+  }
 }
