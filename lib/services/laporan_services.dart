@@ -7,6 +7,7 @@ import 'package:location/location.dart';
 import 'package:mobile_flutter3/services/location_services.dart';
 import 'package:mobile_flutter3/services/user_services.dart';
 
+
 class LaporanService {
   static const String _baseUrl = 'https://amanin.my.id/api/laporan';
   final FlutterSecureStorage storage = FlutterSecureStorage();
