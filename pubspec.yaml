@@ -51,6 +51,7 @@ dependencies:
   cached_network_image: ^3.4.1
   awesome_dialog: ^3.2.1
   shimmer: ^3.0.0
+  intl: ^0.20.1
 
 dev_dependencies:
   flutter_test:

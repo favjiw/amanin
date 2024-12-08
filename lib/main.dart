@@ -48,7 +48,7 @@ class _MainAppState extends State<MainApp> {
             '/maps': (context) => MapScreen(),
             '/profile': (context) => ProfileScreen(),
             '/createLaporan': (context) => CreateLaporanScreen(),
-            '/detailLaporan': (context) => DetailLaporanScreen(),
+            // '/detailLaporan': (context) => DetailLaporanScreen(),
             '/notification': (context) => NotificationScreen(),
           },
         );

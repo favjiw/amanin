@@ -1,10 +1,14 @@
 import 'dart:developer';
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:location/location.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:mobile_flutter3/Model/Laporan.dart';
+import 'package:mobile_flutter3/laporan/detail_laporan_screen.dart';
 import 'package:mobile_flutter3/services/laporan_services.dart';
+import 'package:mobile_flutter3/shared/style.dart';
 
 class MapScreen extends StatefulWidget {
   const MapScreen({super.key});
@@ -116,7 +120,7 @@ class _MapScreenState extends State<MapScreen> {
       backgroundColor: Colors.white,
       body: FlutterMap(
         mapController: mapController,
-        options: MapOptions(
+        options: const MapOptions(
           initialZoom: 5,
         ),
         children: [
@@ -124,82 +128,6 @@ class _MapScreenState extends State<MapScreen> {
             urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
             userAgentPackageName: 'com.example.app',
           ),
-          if (_locationData != null)
-            MarkerLayer(
-              markers: [
-                Marker(
-                  width: 80,
-                  height: 80,
-                  point: LatLng(
-                      _locationData!.latitude!, _locationData!.longitude!),
-                  child: Icon(Icons.location_on, color: Colors.red, size: 40),
-                ),
-              ],
-            ),
-
-          if (_laporan.isNotEmpty)
-            MarkerLayer(
-              markers: _laporan.map((laporan) {
-                LatLng laporanLocation = LatLng(
-                    double.tryParse(laporan.latitude) ?? 0.0,
-                    double.tryParse(laporan.longitude) ?? 0.0);
-
-                List<Laporan> nearbyReports = _laporan.where((otherLaporan) {
-                  LatLng otherLocation = LatLng(
-                      double.tryParse(otherLaporan.latitude) ?? 0.0,
-                      double.tryParse(otherLaporan.longitude) ?? 0.0);
-                  double distance = _calculateDistance(laporanLocation, otherLocation);
-                  return distance <= radiusThreshold; // Jika dalam radiusThreshold
-                }).toList();
-
-                // Log nearbyReports count for debugging
-                log("Nearby Reports: ${nearbyReports.length}");
-
-                if (nearbyReports.length > 3) {
-                  return Marker(
-                    width: 80,
-                    height: 80,
-                    point: LatLng(
-                      double.tryParse(laporan.latitude) ?? 0.0, // Konversi ke double
-                      double.tryParse(laporan.longitude) ?? 0.0, // Konversi ke double
-                    ),
-                    child: Stack(
-                      alignment: Alignment.center,
-                      children: [
-                        // Icon Marker
-                        Icon(Icons.warning, color: Colors.orange, size: 40),
-
-                        Positioned(
-                          top: 10,
-                          child: Container(
-                            padding: EdgeInsets.all(4),
-                            decoration: BoxDecoration(
-                              color: Colors.black.withOpacity(0.7),
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: Text(
-                              laporan.title,
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 12,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
-                } else {
-                  return Marker(
-                    width: 80,
-                    height: 80,
-                    point: laporanLocation,
-                    child: Icon(Icons.warning, color: Colors.orange, size: 40),
-                  );
-                }
-              }).toList(),
-            ),
 
           if (_laporan.isNotEmpty)
             CircleLayer(
@@ -235,6 +163,112 @@ class _MapScreenState extends State<MapScreen> {
                 }
                 return null;
               }).whereType<CircleMarker>().toList(),
+            ),
+
+          MarkerLayer(
+            markers: _laporan.map((laporan) {
+              LatLng laporanLocation = LatLng(
+                  double.tryParse(laporan.latitude) ?? 0.0,
+                  double.tryParse(laporan.longitude) ?? 0.0);
+
+              List<Laporan> nearbyReports = _laporan.where((otherLaporan) {
+                LatLng otherLocation = LatLng(
+                    double.tryParse(otherLaporan.latitude) ?? 0.0,
+                    double.tryParse(otherLaporan.longitude) ?? 0.0);
+                double distance = _calculateDistance(laporanLocation, otherLocation);
+                return distance <= radiusThreshold; // Jika dalam radiusThreshold
+              }).toList();
+
+              // Log nearbyReports count for debugging
+              log("Nearby Reports: ${nearbyReports.length}");
+
+              if (nearbyReports.length > 3) {
+                return Marker(
+                  width: 200.w,
+                  height: 90.h,
+                  point: LatLng(
+                    double.tryParse(laporan.latitude) ?? 0.0, // Konversi ke double
+                    double.tryParse(laporan.longitude) ?? 0.0, // Konversi ke double
+                  ),
+                  child: GestureDetector(
+                    onTap: (){
+                      AwesomeDialog(
+                        context: context,
+                        dialogType: DialogType.question,
+                        animType: AnimType.scale,
+                        titleTextStyle: appBar,
+                        descTextStyle: detailValue,
+                        buttonsTextStyle: whiteOnBtn,
+                        title: laporan.title,
+                        desc: laporan.datetime,
+                        btnCancelOnPress: () {
+                          print('Kembali');
+                        },
+                        btnOkOnPress: () async {
+                          try {
+                            final laporanDetail = await LaporanService().fetchLaporanByIdLocally(laporan.id);
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => DetailLaporanScreen(laporan: laporanDetail),
+                              ),
+                            );
+                          } catch (e) {
+                            print('Error fetching laporan by ID: $e');
+                          }
+                        },
+
+                        btnOkColor: Colors.red,
+                        btnCancelColor: Colors.grey,
+                        btnOkText: 'Lihat Detail',
+                        btnCancelText: 'Kembali',
+                      ).show();
+                    },
+                    child: Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        // Icon Marker
+                        const Icon(Icons.warning, color: Colors.red, size: 40),
+                        Positioned(
+                          top: 0,
+                          child: Container(
+                            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 5.h),
+                            decoration: BoxDecoration(
+                              color: Colors.black.withOpacity(0.7),
+                              borderRadius: BorderRadius.circular(8.r),
+                            ),
+                            child: Text(
+                              laporan.title,
+                              style: whiteLabel,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              } else {
+                return Marker(
+                  width: 80,
+                  height: 80,
+                  point: laporanLocation,
+                  child: Icon(Icons.warning, color: Colors.orange, size: 40),
+                );
+              }
+            }).toList(),
+          ),
+
+          if (_locationData != null)
+            MarkerLayer(
+              markers: [
+                Marker(
+                  width: 80,
+                  height: 80,
+                  point: LatLng(
+                      _locationData!.latitude!, _locationData!.longitude!),
+                  child: Icon(Icons.location_history, color: Colors.blueAccent, size: 40),
+                ),
+              ],
             ),
         ],
       ),

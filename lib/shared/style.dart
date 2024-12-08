@@ -23,6 +23,12 @@ TextStyle whiteOnBtn = GoogleFonts.poppins(
   color: Colors.white,
 );
 
+TextStyle whiteLabel = GoogleFonts.poppins(
+  fontSize: 10.sp,
+  fontWeight: FontWeight.w400,
+  color: Colors.white,
+);
+
 TextStyle homeTitle = GoogleFonts.poppins(
   fontSize: 16.sp,
   fontWeight: FontWeight.w600,

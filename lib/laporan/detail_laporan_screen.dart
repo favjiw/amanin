@@ -1,41 +1,51 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hexcolor/hexcolor.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:mobile_flutter3/generated/assets.dart';
+import 'package:mobile_flutter3/Model/Laporan.dart';
 import 'package:mobile_flutter3/shared/style.dart';
+import 'package:intl/intl.dart';
 
 class DetailLaporanScreen extends StatefulWidget {
-  const DetailLaporanScreen({super.key});
+  final Laporan laporan;
+
+  const DetailLaporanScreen({super.key, required this.laporan});
 
   @override
   State<DetailLaporanScreen> createState() => _DetailLaporanScreenState();
 }
 
 class _DetailLaporanScreenState extends State<DetailLaporanScreen> {
+
+  String formatTanggal(String rawDate) {
+    DateTime date = DateTime.parse(rawDate);
+
+    String formattedDate = DateFormat('d MMM yyyy').format(date);
+
+    return formattedDate;
+  }
+
   @override
   Widget build(BuildContext context) {
+    final laporan = widget.laporan;
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        automaticallyImplyLeading: false,
         backgroundColor: Colors.white,
         centerTitle: true,
-        title: Text(
+        title: const Text(
           'Detail Laporan',
         ),
-        titleTextStyle: appBar,
-        actions: [
-          IconButton(
-            icon: Icon(
-              Icons.close_rounded,
-              color: Colors.black,
-            ),
-            onPressed: () {
-              Navigator.pushReplacementNamed(context, '/botnavbar');
-            },
+        leading: IconButton(
+          icon: Icon(
+            Icons.arrow_back_ios,
+            color: HexColor('#000000'),
           ),
-        ],
+          onPressed: () {
+            // Handle button press
+            Navigator.pop(context);
+          },
+        ),
+        titleTextStyle: appBar,
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -70,7 +80,7 @@ class _DetailLaporanScreenState extends State<DetailLaporanScreen> {
                         child: Image.network('https://saibumi.id/wp-content/uploads/2024/10/Aksi-Berbahaya-13-Remaja-di-Klaten-Terlibat-Konvoi-dengan-Senjata.jpg', width: 301.w, height: 174.h, fit: BoxFit.cover,),
                       ),
                       SizedBox(height: 13.h),
-                      Text('Konvoi Berbahaya', style: detailTitle, textAlign: TextAlign.center,),
+                      Text(laporan.title, style: detailTitle, textAlign: TextAlign.center,),
                     ],
                   ),
                 ),
@@ -83,9 +93,6 @@ class _DetailLaporanScreenState extends State<DetailLaporanScreen> {
                   decoration: BoxDecoration(
                       color: HexColor('#EAEAEA'),
                       borderRadius: BorderRadius.circular(15.r),
-                      boxShadow: [
-
-                      ]
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -95,18 +102,16 @@ class _DetailLaporanScreenState extends State<DetailLaporanScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text('Tanggal Laporan:', style: detailLabel,),
-                          Text('Diproses', style: detailStatus,),
+                          Text(laporan.status, style: detailStatus,),
                         ],
                       ),
-                      Text('11 Mei 2024', style: detailValue,),
+                      Text( formatTanggal(laporan.datetime), style: detailValue,),
                       SizedBox(height: 20.h,),
                       Text('Lokasi Kejadian:', style: detailLabel,),
-                      Text('Jl. Manado', style: detailValue,),
+                      Text(laporan.location, style: detailValue,),
                       SizedBox(height: 20.h,),
                       Text('Deskripsi:', style: detailLabel,),
-                      Text('Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent id enim consequat, pulvinar leo vel, porta lectus. Morbi tortor ipsum, commodo sed libero tincidunt, aliquam euismod ex. Etiam vitae ligula interdum, fringilla nulla vitae, feugiat velit. Morbi sagittis ex non massa luctus pretium. Curabitur non mi finibus, feugiat felis eget, condimentum felis. Nulla dictum aliquet turpis ut sodales. Etiam volutpat arcu eget ipsum rutrum, sed facilisis lorem sollicitudin. Nunc sagittis facilisis varius. Vestibulum non nisl quis tellus facilisis tristique. Nam gravida sem in nisl imperdiet, et laoreet mauris venenatis.', style: detailValue, textAlign: TextAlign.justify,),
-
-
+                      Text(laporan.desc, style: detailValue, textAlign: TextAlign.justify,),
                     ],
                   ),
                 ),

@@ -66,6 +66,35 @@ class LaporanService {
     }
   }
 
+  Future<Laporan> fetchLaporanByIdLocally(int laporanId) async {
+    try {
+      // Ambil semua laporan
+      final List<Laporan> allLaporan = await fetchLaporan();
+
+      // Filter laporan berdasarkan ID
+      return allLaporan.firstWhere(
+            (laporan) => laporan.id == laporanId,
+        orElse: () => Laporan(
+          id: 0,
+          userId: 0,
+          title: 'Unknown',
+          desc: 'Description not available',
+          image: '',
+          location: 'Unknown',
+          latitude: '0.0',
+          longitude: '0.0',
+          datetime: 'Unknown',
+          status: 'Unknown',
+          createdAt: 'Unknown',
+        ),
+      );
+    } catch (e) {
+      throw Exception('Error fetching laporan by ID locally: $e');
+    }
+  }
+
+
+
   Future<void> createLaporanWithLocation({
     required String location,
     required String desc,
