@@ -155,3 +155,15 @@ TextStyle historyOnBtn = GoogleFonts.poppins(
   fontSize: 12.sp,
 );
 
+TextStyle abortBtn = GoogleFonts.poppins(
+  fontSize: 18.sp,
+  fontWeight: FontWeight.w500,
+  color: Colors.grey,
+);
+
+TextStyle sendBtn = GoogleFonts.poppins(
+  fontSize: 18.sp,
+  fontWeight: FontWeight.w600,
+  color: mainColor,
+);
+

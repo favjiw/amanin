@@ -6,7 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:location/location.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:mobile_flutter3/Model/Laporan.dart';
-import 'package:mobile_flutter3/laporan/detail_laporan_screen.dart';
+import 'package:mobile_flutter3/laporan/detail_other_laporan_screen.dart';
 import 'package:mobile_flutter3/services/laporan_services.dart';
 import 'package:mobile_flutter3/shared/style.dart';
 
@@ -210,7 +210,7 @@ class _MapScreenState extends State<MapScreen> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => DetailLaporanScreen(laporan: laporanDetail),
+                                builder: (context) => DetailOtherLaporanScreen(laporan: laporanDetail),
                               ),
                             );
                           } catch (e) {

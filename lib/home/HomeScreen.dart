@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'package:location/location.dart';
 import 'package:mobile_flutter3/Model/Laporan.dart';
 import 'package:mobile_flutter3/Model/User.dart';
 import 'package:mobile_flutter3/generated/assets.dart';
@@ -11,6 +12,8 @@ import 'package:mobile_flutter3/services/user_services.dart';
 import 'package:mobile_flutter3/shared/style.dart';
 import 'package:http/http.dart' as http;
 import 'package:shimmer/shimmer.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:latlong2/latlong.dart';
 
 class Homescreen extends StatefulWidget {
   const Homescreen({super.key});
@@ -23,6 +26,10 @@ class _HomescreenState extends State<Homescreen> {
   late Future<List<Laporan>> _futureLaporan;
   final LaporanService _laporanService = LaporanService();
   User? _user;
+  Location location = Location();
+  bool _serviceEnabled = false;
+  PermissionStatus? _permissionGranted;
+  LocationData? _locationData;
 
   @override
   void initState() {
@@ -30,7 +37,61 @@ class _HomescreenState extends State<Homescreen> {
     super.initState();
     _futureLaporan = _laporanService.fetchLaporan();
     _fetchUserData();
+    _initLocation();
   }
+
+  Future<void> _initLocation() async {
+    _serviceEnabled = await location.serviceEnabled();
+    if (!_serviceEnabled) {
+      _serviceEnabled = await location.requestService();
+      if (!_serviceEnabled) {
+        print("Lokasi tidak tersedia");
+        return;
+      }
+    }
+
+    _permissionGranted = await location.hasPermission();
+    if (_permissionGranted == PermissionStatus.denied) {
+      _permissionGranted = await location.requestPermission();
+      if (_permissionGranted != PermissionStatus.granted) {
+        print("Permission Denied");
+        return;
+      }
+    }
+
+    _locationData = await location.getLocation();
+
+    // Log untuk mengecek nilai latitude dan longitude
+    print("Latitude: ${_locationData?.latitude}");
+    print("Longitude: ${_locationData?.longitude}");
+
+    if (_locationData?.latitude == null || _locationData?.longitude == null) {
+      print("Lokasi tidak valid");
+    }
+  }
+
+
+  Future<void> shareLocationToWhatsApp() async {
+    if (_locationData != null && _locationData!.latitude != null && _locationData!.longitude != null) {
+      final double latitude = _locationData!.latitude!;
+      final double longitude = _locationData!.longitude!;
+
+      final String locationUrl = 'whatsapp://send?text=Lokasi%20Saya:%20https://www.google.com/maps?q=$latitude,$longitude';
+      final Uri uri = Uri.parse(locationUrl);
+
+      if (await canLaunchUrl(uri)) {
+        await launchUrl(uri);
+      } else {
+        final String fallbackUrl = 'https://wa.me/?text=Lokasi%20Saya:%20https://www.google.com/maps?q=$latitude,$longitude';
+        await launch(fallbackUrl);
+        print('WhatsApp tidak ditemukan di perangkat atau tidak dapat membuka URL');
+        throw 'Tidak dapat membuka WhatsApp';
+      }
+    } else {
+      print('Lokasi tidak ditemukan atau tidak valid');
+    }
+  }
+
 
   Future<void> _fetchUserData() async {
     final user = await UserServices().fetchUserData();
@@ -163,12 +224,7 @@ class _HomescreenState extends State<Homescreen> {
                     children: [
                       InkWell(
                         onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => Userlistpage()),
-                          );
-                          // Navigator.pushNamed(context, "/complaint");
-                          // print(currentId);
+                          shareLocationToWhatsApp();
                         },
                         child: Container(
                           width: 166.w,
@@ -177,7 +233,6 @@ class _HomescreenState extends State<Homescreen> {
                           decoration: BoxDecoration(
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(7.r),
-                      
                           ),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.center,

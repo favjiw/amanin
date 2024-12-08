@@ -58,17 +58,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
           'Profile',
           style: appBar,
         ),
-        actions: [
-          IconButton(
-            icon: Icon(
-              Icons.edit,
-              color: HexColor('#D74A49'),
-            ),
-            onPressed: () {
-
-            },
-          ),
-        ],
+        // actions: [
+        //   IconButton(
+        //     icon: Icon(
+        //       Icons.edit,
+        //       color: HexColor('#D74A49'),
+        //     ),
+        //     onPressed: () {
+        //
+        //     },
+        //   ),
+        // ],
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
