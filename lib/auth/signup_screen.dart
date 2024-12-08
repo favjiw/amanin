@@ -220,9 +220,8 @@ class _SignupScreenState extends State<SignupScreen> {
                           );
 
                           if (result['success']) {
-                            // Registrasi berhasil, arahkan ke halaman lain atau tampilkan pesan sukses
                             ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text("Registration successful")),
+                              SnackBar(content: Text("Registration successful, please login")),
                             );
                             Navigator.pop(context);
                           } else {

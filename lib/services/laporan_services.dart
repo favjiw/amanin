@@ -7,7 +7,6 @@ import 'package:location/location.dart';
 import 'package:mobile_flutter3/services/location_services.dart';
 import 'package:mobile_flutter3/services/user_services.dart';
 
-
 class LaporanService {
   static const String _baseUrl = 'https://amanin.my.id/api/laporan';
   final FlutterSecureStorage storage = FlutterSecureStorage();
@@ -23,7 +22,8 @@ class LaporanService {
 
     try {
       final response = await http.get(
-        Uri.parse(_baseUrl),
+        Uri.parse(
+            _baseUrl), // Pastikan `_baseUrl` sudah ditentukan dengan endpoint yang benar
         headers: {
           'Authorization': 'Bearer $token',
           'Content-Type': 'application/json',
@@ -31,12 +31,29 @@ class LaporanService {
         },
       );
 
+      print('Raw API response: ${response.body}');
+
       if (response.statusCode == 200) {
         final Map<String, dynamic> json = jsonDecode(response.body);
 
         if (json['data'] != null) {
           final List<dynamic> data = json['data'];
-          return data.map((item) => Laporan.fromMap(item)).toList();
+          print('Decoded API response: $data');
+
+          // Proses mapping dengan penanganan error
+          return data
+              .map((item) {
+                try {
+                  return Laporan.fromMap(item);
+                } catch (e) {
+                  print('Error parsing item: $item');
+                  print('Exception: $e');
+                  return null; // Jika item error, kembalikan null
+                }
+              })
+              .where((item) => item != null)
+              .cast<Laporan>()
+              .toList();
         } else {
           throw Exception('Data key not found in response');
         }
@@ -63,7 +80,8 @@ class LaporanService {
     try {
       // Ambil lokasi pengguna saat ini
       final LocationService locationService = LocationService();
-      final LocationData currentLocation = await locationService.getCurrentLocation();
+      final LocationData currentLocation =
+          await locationService.getCurrentLocation();
 
       final latitude = currentLocation.latitude?.toString() ?? '0.0';
       final longitude = currentLocation.longitude?.toString() ?? '0.0';
@@ -115,4 +133,79 @@ class LaporanService {
     }
   }
 
+  Future<String> fetchImageUrl(String laporanId) async {
+    // Ambil token dari secure storage
+    final token = await storage.read(key: 'auth_token');
+    if (token == null) {
+      throw Exception('Authentication token not found');
+    }
+
+    // Buat URL endpoint
+    final uri = Uri.parse('https://amanin.my.id/api/laporan/image/$laporanId');
+
+    try {
+      // Lakukan HTTP GET request dengan header Authorization
+      final response = await http.get(
+        uri,
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+      );
+
+      print('Image fetch response: ${response.statusCode}');
+      print('Image URL service: $uri');
+
+      // Jika status code 200, kembalikan URL
+      if (response.statusCode == 200) {
+        return uri.toString();
+      } else {
+        // Cetak respons body jika terjadi error
+        print('Response body (error): ${response.body}');
+        throw Exception('Failed to fetch image: ${response.statusCode}');
+      }
+    } catch (e) {
+      // Tangani error lain seperti koneksi
+      print('Error fetching image URL: $e');
+      throw Exception('Error fetching image: $e');
+    }
+  }
+
+
+// Future<String> fetchImage(String laporanId) async {
+  //   final token = await storage.read(key: 'auth_token');
+  //   final uri = Uri.parse('https://amanin.my.id/api/laporan/image');
+  //
+  //   if (token == null) {
+  //     print('No auth token found.');
+  //     throw Exception('Authentication token not found');
+  //   }
+  //
+  //   try {
+  //     final response = await http.get(
+  //       Uri.parse('$uri/$laporanId'),
+  //       headers: {
+  //         'Authorization': 'Bearer $token',
+  //         'Accept': 'application/json',
+  //         'Content-Type': 'application/json',
+  //       },
+  //     );
+  //
+  //     print('Image fetch response: ${response.statusCode}');
+  //     print('Image URLLL service: ${Uri.parse('$uri/$laporanId')}');
+  //     print('Response body: ${response.body}');
+  //
+  //
+  //     if (response.statusCode == 200) {
+  //       // Jika respons berhasil, kembalikan URL gambar
+  //       return 'https://amanin.my.id/api/laporan/image/$laporanId'; // URL gambar dari server
+  //     } else {
+  //       throw Exception('Failed to fetch image: ${response.statusCode}');
+  //     }
+  //   } catch (e) {
+  //     print('Error fetching image: $e');
+  //     throw Exception('Error fetching image: $e');
+  //   }
+  // }
 }

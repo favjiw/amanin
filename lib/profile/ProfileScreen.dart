@@ -1,10 +1,14 @@
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'package:mobile_flutter3/Model/User.dart';
 import 'package:mobile_flutter3/generated/assets.dart';
 import 'package:mobile_flutter3/services/auth_services.dart';
+import 'package:mobile_flutter3/services/user_services.dart';
 import 'package:mobile_flutter3/shared/style.dart';
+import 'package:shimmer/shimmer.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -15,7 +19,14 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   String? _token;
+  User? _user;
 
+  Future<void> _fetchUserData() async {
+    final user = await UserServices().fetchUserData();
+    setState(() {
+      _user = user;
+    });
+  }
 
   Future<void> _fetchToken() async {
     final storage = FlutterSecureStorage();
@@ -32,6 +43,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     // TODO: implement initState
     super.initState();
     _fetchToken();
+    _fetchUserData();
   }
 
   @override
@@ -80,22 +92,72 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 SizedBox(
                   height: 13.h,
                 ),
-                Text(
-                  'Karina Wicaksono',
-                  style: profileName,
+                _user == null
+                    ? Shimmer.fromColors(
+                  baseColor: Colors.grey.shade300,
+                  highlightColor: Colors.grey.shade100,
+                  child: Container(
+                    width: 100,
+                    height: 30,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(7.r),
+                    ),
+                  ),
+                )
+                    : FittedBox(
+                  fit: BoxFit.fitWidth,
+                  child: Text(
+                    _user!.username,
+                    style: profileName,
+                  ),
                 ),
-                Text(
-                  'karina@gmail.com',
-                  style: profileEmail,
+                const SizedBox(height: 8),
+                // Email
+                _user == null
+                    ?  Shimmer.fromColors(
+                  baseColor: Colors.grey.shade300,
+                  highlightColor: Colors.grey.shade100,
+                  child: Container(
+                    width: 100,
+                    height: 30,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(7.r),
+                    ),
+                  ),
+                )
+                    : FittedBox(
+                  fit: BoxFit.fitWidth,
+                  child: Text(
+                    _user!.email,
+                    style: profileEmail,
+                  ),
                 ),
                 SizedBox(
                   height: 13.h,
                 ),
                 ElevatedButton(
                   onPressed: () {
-                    _logout(context);
-                    print('Token: $_token');
-                    print('Cliced');
+                    AwesomeDialog(
+                      context: context,
+                      dialogType: DialogType.question,
+                      animType: AnimType.scale,
+                      title: 'Konfirmasi Logout',
+                      desc: 'Apakah Anda yakin ingin logout?',
+                      btnCancelOnPress: () {
+                        print('Logout dibatalkan');
+                      },
+                      btnOkOnPress: () {
+                        _logout(context);
+                        print('Token: $_token');
+                        print('Clicked Logout');
+                      },
+                      btnOkColor: Colors.red,
+                      btnCancelColor: Colors.grey,
+                      btnOkText: 'Ya',
+                      btnCancelText: 'Tidak',
+                    ).show();
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.red,
@@ -104,7 +166,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       borderRadius: BorderRadius.circular(7.r),
                     ),
                   ),
-                  child: Text('Logout', style: logoutBtn,),
+                  child: Text(
+                    'Logout',
+                    style: logoutBtn,
+                  ),
                 )
               ],
             ),

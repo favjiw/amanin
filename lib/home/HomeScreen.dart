@@ -10,6 +10,7 @@ import 'package:mobile_flutter3/services/laporan_services.dart';
 import 'package:mobile_flutter3/services/user_services.dart';
 import 'package:mobile_flutter3/shared/style.dart';
 import 'package:http/http.dart' as http;
+import 'package:shimmer/shimmer.dart';
 
 class Homescreen extends StatefulWidget {
   const Homescreen({super.key});
@@ -64,7 +65,18 @@ class _HomescreenState extends State<Homescreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   _user == null
-                  ? const CircularProgressIndicator()
+                  ? Shimmer.fromColors(
+                    baseColor: Colors.grey.shade300,
+                    highlightColor: Colors.grey.shade100,
+                    child: Container(
+                      width: 130.w,
+                      height: 30.h,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(7.r),
+                      ),
+                    ),
+                  )
                       :
                   Text(
                     'Welcome, ${_user!.username}',
