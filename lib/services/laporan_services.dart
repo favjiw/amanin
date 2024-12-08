@@ -13,6 +13,23 @@ class LaporanService {
   final FlutterSecureStorage storage = FlutterSecureStorage();
   final Location _location = Location();
 
+  Future<List<Laporan>> fetchLaporanByUserId(int userId) async {
+    try {
+      // Ambil semua laporan menggunakan function fetchLaporan
+      final List<Laporan> allLaporan = await fetchLaporan();
+
+      // Filter laporan berdasarkan userId
+      final List<Laporan> userLaporan =
+      allLaporan.where((laporan) => laporan.userId == userId).toList();
+
+      return userLaporan;
+    } catch (e) {
+      print('Error fetching laporan by userId: $e');
+      throw Exception('Error fetching laporan by userId: $e');
+    }
+  }
+
+
   Future<List<Laporan>> fetchLaporan() async {
     final token = await storage.read(key: 'auth_token');
 
@@ -32,14 +49,14 @@ class LaporanService {
         },
       );
 
-      print('Raw API response: ${response.body}');
+      // print('Raw API response: ${response.body}');
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> json = jsonDecode(response.body);
 
         if (json['data'] != null) {
           final List<dynamic> data = json['data'];
-          print('Decoded API response: $data');
+          // print('Decoded API response: $data');
 
           // Proses mapping dengan penanganan error
           return data
@@ -163,79 +180,39 @@ class LaporanService {
     }
   }
 
-  Future<String> fetchImageUrl(String laporanId) async {
-    // Ambil token dari secure storage
+Future<String> fetchImage(String laporanId) async {
     final token = await storage.read(key: 'auth_token');
+    final uri = Uri.parse('https://amanin.my.id/api/laporan/image');
+
     if (token == null) {
+      print('No auth token found.');
       throw Exception('Authentication token not found');
     }
 
-    // Buat URL endpoint
-    final uri = Uri.parse('https://amanin.my.id/api/laporan/image/$laporanId');
-
     try {
-      // Lakukan HTTP GET request dengan header Authorization
       final response = await http.get(
-        uri,
+        Uri.parse('$uri/$laporanId'),
         headers: {
           'Authorization': 'Bearer $token',
-          'Content-Type': 'application/json',
           'Accept': 'application/json',
+          'Content-Type': 'application/json',
         },
       );
 
       print('Image fetch response: ${response.statusCode}');
-      print('Image URL service: $uri');
+      print('Image URLLL service: ${Uri.parse('$uri/$laporanId')}');
+      print('Response body: ${response.body}');
 
-      // Jika status code 200, kembalikan URL
+
       if (response.statusCode == 200) {
-        return uri.toString();
+        // Jika respons berhasil, kembalikan URL gambar
+        return 'https://amanin.my.id/api/laporan/image/$laporanId'; // URL gambar dari server
       } else {
-        // Cetak respons body jika terjadi error
-        print('Response body (error): ${response.body}');
         throw Exception('Failed to fetch image: ${response.statusCode}');
       }
     } catch (e) {
-      // Tangani error lain seperti koneksi
-      print('Error fetching image URL: $e');
+      print('Error fetching image: $e');
       throw Exception('Error fetching image: $e');
     }
   }
-
-
-// Future<String> fetchImage(String laporanId) async {
-  //   final token = await storage.read(key: 'auth_token');
-  //   final uri = Uri.parse('https://amanin.my.id/api/laporan/image');
-  //
-  //   if (token == null) {
-  //     print('No auth token found.');
-  //     throw Exception('Authentication token not found');
-  //   }
-  //
-  //   try {
-  //     final response = await http.get(
-  //       Uri.parse('$uri/$laporanId'),
-  //       headers: {
-  //         'Authorization': 'Bearer $token',
-  //         'Accept': 'application/json',
-  //         'Content-Type': 'application/json',
-  //       },
-  //     );
-  //
-  //     print('Image fetch response: ${response.statusCode}');
-  //     print('Image URLLL service: ${Uri.parse('$uri/$laporanId')}');
-  //     print('Response body: ${response.body}');
-  //
-  //
-  //     if (response.statusCode == 200) {
-  //       // Jika respons berhasil, kembalikan URL gambar
-  //       return 'https://amanin.my.id/api/laporan/image/$laporanId'; // URL gambar dari server
-  //     } else {
-  //       throw Exception('Failed to fetch image: ${response.statusCode}');
-  //     }
-  //   } catch (e) {
-  //     print('Error fetching image: $e');
-  //     throw Exception('Error fetching image: $e');
-  //   }
-  // }
 }

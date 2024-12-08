@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:mobile_flutter3/Model/Laporan.dart';
+import 'package:mobile_flutter3/services/laporan_services.dart';
 import 'package:mobile_flutter3/shared/style.dart';
 import 'package:intl/intl.dart';
+import 'package:shimmer/shimmer.dart';
 
 class DetailLaporanScreen extends StatefulWidget {
   final Laporan laporan;
@@ -15,6 +18,30 @@ class DetailLaporanScreen extends StatefulWidget {
 }
 
 class _DetailLaporanScreenState extends State<DetailLaporanScreen> {
+  String? token;
+
+  Future<void> loadToken() async {
+    final storage = FlutterSecureStorage();
+    final fetchedToken = await storage.read(key: 'auth_token');
+    if (fetchedToken != null) {
+      setState(() {
+        token = fetchedToken;
+      });
+    } else {
+      // Token tidak ditemukan, lakukan sesuatu
+    }
+  }
+
+  Future<String> getImageUrl(String laporanId) async {
+    try {
+      final imageUrl = await LaporanService().fetchImage(laporanId);
+      print("THIS IS IMAGE URL: ${imageUrl}");
+      return imageUrl;
+    } catch (e) {
+      print('Error fetching image URL: $e');
+      return '';
+    }
+  }
 
   String formatTanggal(String rawDate) {
     DateTime date = DateTime.parse(rawDate);
@@ -22,6 +49,13 @@ class _DetailLaporanScreenState extends State<DetailLaporanScreen> {
     String formattedDate = DateFormat('d MMM yyyy').format(date);
 
     return formattedDate;
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    loadToken();
   }
 
   @override
@@ -53,7 +87,9 @@ class _DetailLaporanScreenState extends State<DetailLaporanScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              SizedBox(height: 10.h,),
+              SizedBox(
+                height: 10.h,
+              ),
               Center(
                 child: Container(
                   width: 301.w,
@@ -68,8 +104,7 @@ class _DetailLaporanScreenState extends State<DetailLaporanScreen> {
                           blurRadius: 5,
                           offset: Offset(0, 3),
                         ),
-                      ]
-                  ),
+                      ]),
                   child: Column(
                     children: [
                       ClipRRect(
@@ -77,22 +112,30 @@ class _DetailLaporanScreenState extends State<DetailLaporanScreen> {
                           topLeft: Radius.circular(15.r),
                           topRight: Radius.circular(15.r),
                         ),
-                        child: Image.network('https://saibumi.id/wp-content/uploads/2024/10/Aksi-Berbahaya-13-Remaja-di-Klaten-Terlibat-Konvoi-dengan-Senjata.jpg', width: 301.w, height: 174.h, fit: BoxFit.cover,),
+                        child: buildLaporanImage(laporan.id.toString()),
+                        // child: Image.network('https://saibumi.id/wp-content/uploads/2024/10/Aksi-Berbahaya-13-Remaja-di-Klaten-Terlibat-Konvoi-dengan-Senjata.jpg', width: 301.w, height: 174.h, fit: BoxFit.cover,),
                       ),
                       SizedBox(height: 13.h),
-                      Text(laporan.title, style: detailTitle, textAlign: TextAlign.center,),
+                      Text(
+                        laporan.title,
+                        style: detailTitle,
+                        textAlign: TextAlign.center,
+                      ),
                     ],
                   ),
                 ),
               ),
-              SizedBox(height: 55.h,),
+              SizedBox(
+                height: 55.h,
+              ),
               Center(
                 child: Container(
                   width: 337.w,
-                  padding: EdgeInsets.symmetric(horizontal: 23.w, vertical: 14.h),
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 23.w, vertical: 14.h),
                   decoration: BoxDecoration(
-                      color: HexColor('#EAEAEA'),
-                      borderRadius: BorderRadius.circular(15.r),
+                    color: HexColor('#EAEAEA'),
+                    borderRadius: BorderRadius.circular(15.r),
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -101,26 +144,95 @@ class _DetailLaporanScreenState extends State<DetailLaporanScreen> {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text('Tanggal Laporan:', style: detailLabel,),
-                          Text(laporan.status, style: detailStatus,),
+                          Text(
+                            'Tanggal Laporan:',
+                            style: detailLabel,
+                          ),
+                          Text(
+                            laporan.status,
+                            style: detailStatus,
+                          ),
                         ],
                       ),
-                      Text( formatTanggal(laporan.datetime), style: detailValue,),
-                      SizedBox(height: 20.h,),
-                      Text('Lokasi Kejadian:', style: detailLabel,),
-                      Text(laporan.location, style: detailValue,),
-                      SizedBox(height: 20.h,),
-                      Text('Deskripsi:', style: detailLabel,),
-                      Text(laporan.desc, style: detailValue, textAlign: TextAlign.justify,),
+                      Text(
+                        formatTanggal(laporan.datetime),
+                        style: detailValue,
+                      ),
+                      SizedBox(
+                        height: 20.h,
+                      ),
+                      Text(
+                        'Lokasi Kejadian:',
+                        style: detailLabel,
+                      ),
+                      Text(
+                        laporan.location,
+                        style: detailValue,
+                      ),
+                      SizedBox(
+                        height: 20.h,
+                      ),
+                      Text(
+                        'Deskripsi:',
+                        style: detailLabel,
+                      ),
+                      Text(
+                        laporan.desc,
+                        style: detailValue,
+                        textAlign: TextAlign.justify,
+                      ),
                     ],
                   ),
                 ),
               ),
-              SizedBox(height: 30.h,),
+              SizedBox(
+                height: 30.h,
+              ),
             ],
           ),
         ),
       ),
+    );
+  }
+
+  Widget buildLaporanImage(String laporanId) {
+    if (token == null) {
+      return const Center(child: CircularProgressIndicator());
+    }
+    return FutureBuilder<String>(
+      future: getImageUrl(laporanId),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Shimmer.fromColors(
+            baseColor: Colors.grey.shade300,
+            highlightColor: Colors.grey.shade100,
+            child: Container(
+              width: 301.w, height: 174.h,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(7.r),
+              ),
+            ),
+          );
+        } else if (snapshot.hasError || snapshot.data!.isEmpty) {
+          return const Icon(Icons.broken_image, size: 50);
+        } else {
+          final imageUrl = snapshot.data!;
+          return Image.network(
+            imageUrl,
+            width: 301.w,
+            height: 174.h,
+            fit: BoxFit.cover,
+            headers: {
+              'Authorization': 'Bearer $token',
+              'Accept': 'application/json',
+            },
+            errorBuilder: (context, error, stackTrace) {
+              return const Icon(Icons.broken_image, size: 50);
+            },
+          );
+        }
+      },
     );
   }
 }

@@ -105,6 +105,15 @@ class _LoginScreenState extends State<LoginScreen> {
                     TextFormField(
                       controller: _emailController,
                       style: loginOnInput,
+                      keyboardType: TextInputType.emailAddress,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Email is required';
+                        } else if (!EmailValidator.validate(value)) {
+                          return 'Invalid email format';
+                        }
+                        return null;
+                      },
                       decoration: InputDecoration(
                         contentPadding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 16.h),
                         hintText: 'abc@gmail.com',
