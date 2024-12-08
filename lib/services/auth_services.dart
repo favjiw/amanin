@@ -40,17 +40,16 @@ class AuthService {
           'password': password,
           'role': 'user',
           'remember_token': null,
-          'created_at': currentTime,
-          'updated_at': 'user',
         }),
       );
 
-      if (response.statusCode == 200) {
-        // Jika berhasil, decode JSON response dan kembalikan data
+      print('Response Status: ${response.statusCode}');
+      print('Response Body: ${response.body}');
+
+      if (response.statusCode == 201) {
         final data = jsonDecode(response.body);
         return {'success': true, 'data': data};
       } else {
-        // Jika gagal, kembalikan pesan error dari response
         final error = jsonDecode(response.body);
         return {
           'success': false,
@@ -58,10 +57,10 @@ class AuthService {
         };
       }
     } catch (e) {
-      // Tangani jika ada exception
       return {'success': false, 'message': 'Something went wrong: $e'};
     }
   }
+
 
   Future<Map<String, dynamic>> login(
       {required String email, required String password}) async {

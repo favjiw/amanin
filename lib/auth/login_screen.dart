@@ -1,3 +1,4 @@
+import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hexcolor/hexcolor.dart';
@@ -27,6 +28,27 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void _login() async {
+    if (_emailController.text.trim().isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Email tidak boleh kosong')),
+      );
+      return;
+    }
+
+    if (!EmailValidator.validate(_emailController.text.trim())) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Format email tidak valid')),
+      );
+      return;
+    }
+
+    if (_passwordController.text.trim().isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Password tidak boleh kosong')),
+      );
+      return;
+    }
+
     setState(() {
       _isLoading = true;
     });
@@ -142,19 +164,19 @@ class _LoginScreenState extends State<LoginScreen> {
                         prefixIcon: Image.asset(Assets.assetsPasswIc),
                       ),
                     ),
-                    SizedBox(height: 5.h,),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        TextButton(
-                          onPressed: () {},
-                          child: Text(
-                            "Forgot Password?",
-                            style: forgotPassword,
-                          ),
-                        ),
-                      ],
-                    ),
+                    SizedBox(height: 35.h,),
+                    // Row(
+                    //   mainAxisAlignment: MainAxisAlignment.end,
+                    //   children: [
+                    //     TextButton(
+                    //       onPressed: () {},
+                    //       child: Text(
+                    //         "Forgot Password?",
+                    //         style: forgotPassword,
+                    //       ),
+                    //     ),
+                    //   ],
+                    // ),
                     Center(
                       child: SizedBox(
                         width: 271.w,

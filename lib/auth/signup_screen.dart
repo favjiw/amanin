@@ -1,9 +1,11 @@
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:mobile_flutter3/generated/assets.dart';
 import 'package:mobile_flutter3/services/auth_services.dart';
 import 'package:mobile_flutter3/shared/style.dart';
+import 'package:email_validator/email_validator.dart';
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});
@@ -90,6 +92,15 @@ class _SignupScreenState extends State<SignupScreen> {
                   SizedBox(height: 20.h,),
                   TextFormField(
                     controller: _emailController,
+                    keyboardType: TextInputType.emailAddress,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Email is required';
+                      } else if (!EmailValidator.validate(value)) {
+                        return 'Invalid email format';
+                      }
+                      return null;
+                    },
                     style: loginOnInput,
                     decoration: InputDecoration(
                       contentPadding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 16.h),
@@ -203,7 +214,6 @@ class _SignupScreenState extends State<SignupScreen> {
                         onPressed: () async {
                           final authService = AuthService();
 
-                          // Validasi input
                           if (_passwordController.text != _confirmPasswordController.text) {
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(content: Text("Passwords do not match")),
@@ -211,7 +221,14 @@ class _SignupScreenState extends State<SignupScreen> {
                             return;
                           }
 
-                          // Panggil service register
+                          if (_emailController.text.isEmpty ||
+                              !EmailValidator.validate(_emailController.text)) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text("Please enter a valid email")),
+                            );
+                            return;
+                          }
+
                           final result = await authService.register(
                             username: _usernameController.text,
                             email: _emailController.text,
@@ -220,12 +237,24 @@ class _SignupScreenState extends State<SignupScreen> {
                           );
 
                           if (result['success']) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text("Registration successful, please login")),
-                            );
-                            Navigator.pop(context);
+                            print("SUCCESS REGISTER");
+                            AwesomeDialog(
+                              context: context,
+                              dialogType: DialogType.success,
+                              animType: AnimType.scale,
+                              titleTextStyle: appBar,
+                              descTextStyle: detailValue,
+                              buttonsTextStyle: whiteOnBtn,
+                              title: "Berhasil Registrasi",
+                              desc: "Silakan login menggunakan akun yang baru kamu buat",
+                              btnOkOnPress: ()  {
+                                Navigator.pop(context);
+                              },
+                              btnOkColor: Colors.red,
+                              btnOkText: 'Ok',
+                            ).show();
                           } else {
-                            // Tampilkan pesan error
+                            print("GAGAL REGISTRASI: ${result['message']}");
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(content: Text(result['message'])),
                             );

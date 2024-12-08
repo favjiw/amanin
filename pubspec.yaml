@@ -52,6 +52,7 @@ dependencies:
   awesome_dialog: ^3.2.1
   shimmer: ^3.0.0
   intl: ^0.20.1
+  email_validator: ^3.0.0
 
 dev_dependencies:
   flutter_test:
