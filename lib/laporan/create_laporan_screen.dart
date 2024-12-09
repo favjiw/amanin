@@ -242,7 +242,7 @@ class _CreateLaporanScreenState extends State<CreateLaporanScreen> {
                               jenisKriminalitas: _selectedValue ?? 'Lainnya',
                               imageFile: _selectedImage!, // Mengirimkan file gambar
                             );
-                            Navigator.pushReplacementNamed(context, '/detailLaporan');
+                            // Navigator.pushReplacementNamed(context, '/detailLaporan');
                           } catch (e) {
                             print('Gagal membuat laporan: $e');
                             ScaffoldMessenger.of(context).showSnackBar(

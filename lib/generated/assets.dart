@@ -26,5 +26,6 @@ class Assets {
   static const String assetsUsernameIc = 'assets/username-ic.png';
   static const String assetsWarningHomeImg = 'assets/warning-home-img.png';
   static const String assetsWomanImg = 'assets/woman-img.png';
+  static const String iconIcon = 'assets/icon/icon.png';
 
 }
