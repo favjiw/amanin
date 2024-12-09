@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:mobile_flutter3/services/laporan_services.dart';
+import 'package:mobile_flutter3/shared/style.dart';
 
 class StatScreen extends StatefulWidget {
   const StatScreen({super.key});
@@ -74,8 +75,8 @@ class _StatScreenState extends State<StatScreen> {
         automaticallyImplyLeading: false,
         title: const Text(
           'Statistik Laporan Kriminalitas',
-          style: TextStyle(color: Colors.black, fontSize: 18),
         ),
+        titleTextStyle: appBar,
       ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())

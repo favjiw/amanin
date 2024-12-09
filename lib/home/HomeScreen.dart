@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'package:intl/intl.dart';
 import 'package:location/location.dart';
 import 'package:mobile_flutter3/Model/Laporan.dart';
 import 'package:mobile_flutter3/Model/User.dart';
 import 'package:mobile_flutter3/generated/assets.dart';
 import 'package:mobile_flutter3/home/UserListPage.dart';
+import 'package:mobile_flutter3/notification/notification_screen.dart';
 import 'package:mobile_flutter3/services/laporan_services.dart';
 import 'package:mobile_flutter3/services/user_services.dart';
 import 'package:mobile_flutter3/shared/style.dart';
@@ -70,6 +72,14 @@ class _HomescreenState extends State<Homescreen> {
     }
   }
 
+  String formatTanggal(String rawDate) {
+    DateTime date = DateTime.parse(rawDate);
+
+    String formattedDate = DateFormat('d MMM yyyy').format(date);
+
+    return formattedDate;
+  }
+
 
   Future<void> shareLocationToWhatsApp() async {
     if (_locationData != null && _locationData!.latitude != null && _locationData!.longitude != null) {
@@ -113,6 +123,7 @@ class _HomescreenState extends State<Homescreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: SingleChildScrollView(
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: 16.w),
@@ -139,13 +150,21 @@ class _HomescreenState extends State<Homescreen> {
                     ),
                   )
                       :
-                  Text(
-                    'Welcome, ${_user!.username}',
-                    style: homeWelcome,
+                  FittedBox(
+                    fit: BoxFit.fitWidth,
+                    child: Text(
+                      'Welcome, ${_user!.username}',
+                      style: homeWelcome,
+                    ),
                   ),
                   InkWell(
                       onTap: () {
-                        Navigator.pushNamed(context, '/notification');
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => NotificationScreen(user: _user!), // Passing user model
+                          ),
+                        );
                       },
                       child: Image.asset(
                         Assets.assetsNotifNoneIc,
@@ -154,13 +173,56 @@ class _HomescreenState extends State<Homescreen> {
                       ),),
                 ],
               ),
-              SizedBox(height: 30.h,),
+              SizedBox(height: 20.h,),
+              Center(
+                child: Container(
+                  width: 350.w,
+                  decoration: BoxDecoration(
+                    color: HexColor('#1B4552'),
+                    borderRadius: BorderRadius.circular(10.r),
+                    image: DecorationImage(
+                      image: AssetImage(Assets.assetsHomeBgImg),
+                      alignment: Alignment.bottomCenter,
+                    ),
+                  ),
+                  child: Padding(
+                    padding: EdgeInsets.only(top: 52.h, left: 15.w, right: 5.w),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Ayo Lapor!",
+                          style: homeContainerTitle,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              "Mari kita bangun\nIndonesia\nmenjadi lebih baik\ndengan\nmelaporkan\nkriminalitas!",
+                              style: homeContainerSubtitle,
+                            ),
+                            Align(
+                                alignment: Alignment.bottomRight,
+                                child: Image.asset(
+                                  Assets.assetsWomanImg,
+                                  width: 160.w,
+                                  height: 174.h,
+                                )),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(height: 20.h),
               Center(
                 child: SizedBox(
                     width: 315.w,
                     height: 58.h,
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
+                        padding: EdgeInsets.zero,
                           backgroundColor: mainColor,
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(15.r)
@@ -169,105 +231,109 @@ class _HomescreenState extends State<Homescreen> {
                       onPressed: () {
                         Navigator.pushNamed(context, "/createLaporan");
                       },
-                      child: Text(
-                        "Buat Laporan",
-                        style: whiteOnBtn,
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Container(
+                            width: 50.w,
+                            height: 50.h,
+                          ),
+                          Text('BUAT LAPORAN', style: whiteOnBtn,),
+                          Container(
+                            width: 50.w,
+                            height: 50.h,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(100.r),
+                            ),
+                            child: Icon(Icons.add_rounded, color: Colors.white,),
+                          ),
+                        ],
                       ),
                     ),
                   ),
               ),
-              SizedBox(height: 30.h),
+              SizedBox(height: 20.h),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Column(
-                    children: [
-                      InkWell(
+                  InkWell(
                         onTap: () {
                           Navigator.pushNamed(context, "/maps");
                           // print(currentId);
                         },
                         child: Container(
                           width: 166.w,
-                          height: 166.h,
                           padding: EdgeInsets.only(top: 13.h, bottom: 13.h),
                           decoration: BoxDecoration(
-                            color: Colors.white,
+                            color: HexColor('#F5F5F8'),
                             borderRadius: BorderRadius.circular(7.r),
-
                           ),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               Container(
-                                width: 40.w,
-                                height: 40.h,
-                                padding: EdgeInsets.all(7),
+                                width: 140.w,
+                                height: 130.h,
                                 decoration: BoxDecoration(
-                                  color: mainColor,
-                                  shape: BoxShape.circle,
+                                  color: HexColor('#DAC3EF'),
+                                  borderRadius: BorderRadius.circular(7.r),
                                 ),
-                                // child: Image.asset(
-                                //   "assets/ic-report.png",
-                                //   width: 25.w,
-                                //   height: 25.h,
-                                // ),
+                                child: Center(
+                                  child: Image.asset(Assets.assetsMapHomeImg, width: 100.w, height: 100.h,),
+                                ),
                               ),
+                              SizedBox(height: 5.h,),
+                              Text('Maps Kriminalitas', style: homeFeatureTitle,),
+                              SizedBox(height: 5.h,),
                             ],
                           ),
                         ),
-                      ),
-                      Text('Maps Kriminalitas'),
-                    ],
                   ),
-                  Column(
-                    children: [
-                      InkWell(
+                  InkWell(
                         onTap: () {
                           shareLocationToWhatsApp();
                         },
                         child: Container(
                           width: 166.w,
-                          height: 166.h,
                           padding: EdgeInsets.only(top: 13.h, bottom: 13.h),
                           decoration: BoxDecoration(
-                            color: Colors.white,
+                            color: HexColor('#F5F5F8'),
                             borderRadius: BorderRadius.circular(7.r),
                           ),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               Container(
-                                width: 40.w,
-                                height: 40.h,
-                                padding: EdgeInsets.all(7),
+                                width: 140.w,
+                                height: 130.h,
                                 decoration: BoxDecoration(
-                                  color: mainColor,
-                                  shape: BoxShape.circle,
+                                  color: HexColor('#F7D047'),
+                                  borderRadius: BorderRadius.circular(7.r),
                                 ),
-                                // child: Image.asset(
-                                //   "assets/ic-report.png",
-                                //   width: 25.w,
-                                //   height: 25.h,
-                                // ),
+                                child: Center(
+                                  child: Image.asset(Assets.assetsLocationHomeImg, width: 100.w, height: 100.h,),
+                                ),
                               ),
+                              SizedBox(height: 5.h,),
+                              Text('Share Location', style: homeFeatureTitle,),
+                              SizedBox(height: 5.h,),
                             ],
                           ),
                         ),
                       ),
-                      Text('Share Location'),
                     ],
-                  ),
-                ],
               ),
-              SizedBox(height: 30.h,),
+              SizedBox(height: 20.h,),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text('Laporan Terbaru', style: homeTitle,),
                   TextButton(
-                      onPressed: (){},
+                      onPressed: (){
+                        Navigator.pushNamed(context, '/laporanAll');
+                      },
                       child: Text('See all', style: seeAll,))
                 ],
               ),
@@ -286,7 +352,7 @@ class _HomescreenState extends State<Homescreen> {
                       physics: const NeverScrollableScrollPhysics(),
                       padding: EdgeInsets.zero,
                       shrinkWrap: true,
-                      itemCount: laporanList.length,
+                      itemCount: 3,
                       itemBuilder: (context, index){
                         final laporan = laporanList[index];
                         return Column(
@@ -299,28 +365,49 @@ class _HomescreenState extends State<Homescreen> {
                                 height: 70.h,
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(5.r),
-                                  color: Colors.white,
+                                  color: HexColor('#F5F5F8'),
                                 ),
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
-                                    Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                    Row(
+                                      crossAxisAlignment: CrossAxisAlignment.center,
                                       children: [
-                                        Text(laporan.title),
-                                        SizedBox(height: 2.h,),
-                                        Row(
-                                          crossAxisAlignment: CrossAxisAlignment.center,
+                                        Container(
+                                          width: 60.w,
+                                          height: 60.w,
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(7.r),
+                                            color: HexColor('#F79B6A'),
+                                          ),
+                                          child: Center(
+                                            child: Image.asset(Assets.assetsWarningHomeImg, width: 60.w, height: 60.h,),
+                                          ),
+                                        ),
+                                        SizedBox(width: 10.w,),
+                                        Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          mainAxisAlignment: MainAxisAlignment.center,
                                           children: [
-                                            Image.asset('assets/location-ic.png', width: 15.w, height: 17.h,),
-                                            SizedBox(width: 3.w,),
-                                            Text('${laporan.location}'),
+                                            Text(laporan.title, style: detailValue,),
+                                            SizedBox(height: 2.h,),
+                                            Row(
+                                              crossAxisAlignment: CrossAxisAlignment.center,
+                                              children: [
+                                                Icon(Icons.location_on, color: Colors.black,),
+                                                SizedBox(width: 3.w,),
+                                                Text('${laporan.location}', style: detailValue,),
+                                              ],
+                                            ),
                                           ],
                                         ),
                                       ],
                                     ),
-                                    Text(laporan.datetime),
+                                    Text(
+                                        formatTanggal(laporan.datetime),
+                                      style: detailValue,
+                                    ),
                                   ],
                                 ),
                               ),

@@ -167,3 +167,22 @@ TextStyle sendBtn = GoogleFonts.poppins(
   color: mainColor,
 );
 
+TextStyle homeContainerTitle = GoogleFonts.poppins(
+  fontSize: 24.sp,
+  fontWeight: FontWeight.w600,
+  color: Colors.white,
+);
+
+TextStyle homeContainerSubtitle = GoogleFonts.poppins(
+  fontSize: 14.sp,
+  fontWeight: FontWeight.w400,
+  color: Colors.white,
+);
+
+TextStyle homeFeatureTitle = GoogleFonts.poppins(
+  fontSize: 14.sp,
+  fontWeight: FontWeight.w500,
+  color: Colors.black,
+);
+
+

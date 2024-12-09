@@ -24,6 +24,7 @@ class _BotnavbarState extends State<Botnavbar> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: PageStorage(
         bucket: bucket,
         child: currentScreen,
@@ -33,11 +34,12 @@ class _BotnavbarState extends State<Botnavbar> {
         shape: const CircleBorder(),
         child: Text('SOS', style: sos,),
         onPressed: () {
-          launchUrlString("tel://911");
+          launchUrlString("tel://112");
         },
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: BottomAppBar(
+        color: Colors.white,
         shape: const CircularNotchedRectangle(),
         notchMargin: 10,
         child: SizedBox(
